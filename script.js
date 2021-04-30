@@ -1,4 +1,6 @@
-let modalQt = 1
+let modalQt = 1 //qtd de itens
+let cart = [] //carrinho
+let modalKey = 0
 
 //Listagem das pizzas
 pizzaJson.map((item, index) => {
@@ -17,6 +19,7 @@ pizzaJson.map((item, index) => {
       e.preventDefault()
 
       modalQt = 1
+      modalKey = e.target.closest('.pizza-item').getAttribute('data-key')
 
       //Parte do Modal
       document.querySelector('.pizzaInfo h1').innerHTML = item.name
@@ -82,3 +85,27 @@ document.querySelectorAll('.pizzaInfo--size').forEach((size, sizeIndex) => {
       size.classList.add('selected')
    })
 })
+
+//adicionando ao carrinho
+document.querySelector('.pizzaInfo--addButton').addEventListener('click', () => {
+   let size = document.querySelector('.pizzaInfo--size.selected').getAttribute('data-key')
+
+   let identifier = pizzaJson[modalKey].id + '@' + size
+
+   let key = cart.findIndex((item) => {
+      return item.identifier == identifier
+   })
+
+   if (key > -1) {
+      cart[key].qt += modalQt
+   } else {
+      cart.push({
+         identifier: identifier,
+         id: pizzaJson[modalKey].id, //qual a pizza?
+         size: size,  //qual o tamanho?
+         qt: modalQt //quantas pizzas?
+      })
+   }
+   closeModal()
+})
+
